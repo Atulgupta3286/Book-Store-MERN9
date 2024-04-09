@@ -1,13 +1,8 @@
 <%- include("./partials/header") %>
-    <p>
-        <%= book.name %>
-
-    </p>
     <form class="container w-50 mt-2 p-5 bg-light" action="/update/<%= index %>" method="post">
         <div class="container alert alert-dark mt-5">
             <h1 class="text-center p-5">Book Store Update Entry</h1>
         </div>
-
         <input class="form-control mb-3" type="text" placeholder="Book Name" name="name"
             value="<%= book.name %>" />
 

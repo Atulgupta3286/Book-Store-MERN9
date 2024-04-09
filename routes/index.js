@@ -1,7 +1,17 @@
 var express = require('express');
 var router = express.Router();
 
-const BOOK = [];
+const BOOK = [
+  {
+    name:"Maths",
+    author: "Atul",
+    price:599,
+    quantity:10,
+    category:"Class-10",
+    language : "English",
+    description: "The Math Book is a captivating introduction to the worlds most famous theorems, mathematicians and movements, aimed at adults with an interest in the subject and students wanting to gain more of an overview"
+  },
+];
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index');
@@ -35,6 +45,13 @@ router.get('/update/:index', function (req, res, next) {
     book,
     index
   });
+});
+
+//update book form submissionn
+router.post('/update/:index', function (req, res, next) {
+  const i = req.params.index;
+  BOOK[i]=req.body;
+  res.redirect('/readall');
 });
 
 router.get('/about', function (req, res, next) {
