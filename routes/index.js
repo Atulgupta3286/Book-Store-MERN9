@@ -1,14 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
+const Books = require("../models/bookModel");
+
 const BOOK = [
   {
-    name:"Maths",
+    name: "Maths",
     author: "Atul",
-    price:599,
-    quantity:10,
-    category:"Class-10",
-    language : "English",
+    price: 599,
+    quantity: 10,
+    category: "Class-10",
+    language: "English",
     description: "The Math Book is a captivating introduction to the worlds most famous theorems, mathematicians and movements, aimed at adults with an interest in the subject and students wanting to gain more of an overview"
   },
 ];
@@ -18,9 +20,14 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/readall', function (req, res, next) {
-  res.render('library', {
-    books: BOOK
-  });
+  // res.render('library', {
+  //   books: BOOK
+  // });
+  Books.find()
+  .then((books) => {
+    res.render("library", { books: books });
+  })
+  .catch((err) => res.send(err));
 });
 
 router.get('/create', function (req, res, next) {
@@ -28,9 +35,14 @@ router.get('/create', function (req, res, next) {
 });
 
 router.post('/create', function (req, res, next) {
-  BOOK.push(req.body)
-  // res.json(BOOK);
-  res.redirect('/readall');
+  // BOOK.push(req.body)
+  // // res.json(BOOK);
+  // res.redirect('/readall');
+  Books.create(req.body)
+    .then(() => {
+      res.redirect("/readall");
+    })
+    .catch((err) => res.send(err));
 });
 
 router.get('/delete/:index', function (req, res, next) {
@@ -50,7 +62,7 @@ router.get('/update/:index', function (req, res, next) {
 //update book form submissionn
 router.post('/update/:index', function (req, res, next) {
   const i = req.params.index;
-  BOOK[i]=req.body;
+  BOOK[i] = req.body;
   res.redirect('/readall');
 });
 
