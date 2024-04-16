@@ -26,8 +26,8 @@
                     <p class="card-text">
                         <b>Description</b> : <%= book.description%>
                     </p>
-                    <a href="/delete/<%= index%>" class="card-link text-danger">Delete Book</a>
-                    <a href="/update/<%= index%>" class="card-link">Update Book</a>
+                    <a href="/delete/<%= book._id%>" class="card-link text-danger">Delete Book</a>
+                    <a href="/update/<%= book._id%>" class="card-link">Update Book</a>
                 </div>
             </div>
             <% }) %>
