@@ -51,11 +51,11 @@ router.post('/create', upload, async function (req, res, next) {
   //   })
   //   .catch((err) => res.send(err));
   try {
-
-    // const newbook = new Books(req.body);
-    // await newbook.save();
-    // res.redirect("/readall");
-    res.json({ body: req.body, file: req.file });
+    // res.json({ body: req.body, file: req.file });
+    
+    const newbook = new Books( {...req.body, image:req.file.filename});
+    await newbook.save();
+    res.redirect("/readall");
   } catch (error) {
     res.send(error);
   }

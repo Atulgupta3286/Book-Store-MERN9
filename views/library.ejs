@@ -6,8 +6,8 @@
     <div class="d-flex flex-wrap container bg-light p-5">
         <% books.forEach(function(book, index){ %>
             <div class="card me-3 mb-3" style="width: 18rem">
+                <img width="w-100"  src="/images/<%= book.image%>" alt="">
                 <div class="card-body">
-                    <img src=`${book.coverimage}` alt="">
                     <h5 class="card-title">
                         <b>Book Name</b> : <%= book.name%>
                     </h5>
