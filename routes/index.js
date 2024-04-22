@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-
+const fs = require("fs");
 const Books = require("../models/bookModel");
 const upload = require("../utils/multer").single("image");
-
+const path = require("path");
 const BOOK = [
   {
     name: "Maths",
@@ -52,8 +52,8 @@ router.post('/create', upload, async function (req, res, next) {
   //   .catch((err) => res.send(err));
   try {
     // res.json({ body: req.body, file: req.file });
-    
-    const newbook = new Books( {...req.body, image:req.file.filename});
+
+    const newbook = new Books({ ...req.body, image: req.file.filename });
     await newbook.save();
     res.redirect("/readall");
   } catch (error) {
@@ -65,12 +65,16 @@ router.get('/delete/:id', async function (req, res, next) {
   // BOOK.splice(req.params.index, 1);
   // res.redirect('/readall');
   try {
-    await Books.findByIdAndDelete(req.params.id);
+    const book = await Books.findByIdAndDelete(req.params.id);
+    
+    fs.unlinkSync(
+      path.join(__dirname, "..", "public", "images", book.image)
+      );
+
     res.redirect('/readall');
   } catch (error) {
     res.send(error);
   }
-
 });
 
 router.get('/update/:id', async function (req, res, next) {
