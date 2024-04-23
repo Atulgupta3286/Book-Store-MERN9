@@ -66,10 +66,10 @@ router.get('/delete/:id', async function (req, res, next) {
   // res.redirect('/readall');
   try {
     const book = await Books.findByIdAndDelete(req.params.id);
-    
+
     fs.unlinkSync(
       path.join(__dirname, "..", "public", "images", book.image)
-      );
+    );
 
     res.redirect('/readall');
   } catch (error) {
@@ -93,12 +93,19 @@ router.get('/update/:id', async function (req, res, next) {
 });
 
 //update book form submissionn
-router.post('/update/:id', async function (req, res, next) {
+router.post('/update/:id', upload, async function (req, res, next) {
   // const i = req.params.index;
   // BOOK[i] = req.body;
   // res.redirect('/readall');
   try {
-    await Books.findByIdAndUpdate(req.params.id, req.body);
+    const updateddata = { ...req.body };
+    if (req.file) {
+      updateddata.image = req.file.filename;
+      fs.unlinkSync(
+        path.join(__dirname, "..", "public", "images", req.body.oldimage)
+      );
+    }
+    await Books.findByIdAndUpdate(req.params.id, updateddata);
     res.redirect('/readall');
 
   } catch (error) {
