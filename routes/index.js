@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 const fs = require("fs");
 const Books = require("../models/bookModel");
@@ -12,15 +12,16 @@ const BOOK = [
     quantity: 10,
     category: "Class-10",
     language: "English",
-    description: "The Math Book is a captivating introduction to the worlds most famous theorems, mathematicians and movements, aimed at adults with an interest in the subject and students wanting to gain more of an overview"
+    description:
+      "The Math Book is a captivating introduction to the worlds most famous theorems, mathematicians and movements, aimed at adults with an interest in the subject and students wanting to gain more of an overview",
   },
 ];
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index');
+router.get("/", function (req, res, next) {
+  res.render("index");
 });
 
-router.get('/readall', async function (req, res, next) {
+router.get("/readall", async function (req, res, next) {
   // res.render('library', {
   //   books: BOOK
   // });
@@ -37,11 +38,11 @@ router.get('/readall', async function (req, res, next) {
   }
 });
 
-router.get('/create', function (req, res, next) {
-  res.render('create');
+router.get("/create", function (req, res, next) {
+  res.render("create");
 });
 
-router.post('/create', upload, async function (req, res, next) {
+router.post("/create", async function (req, res, next) {
   // BOOK.push(req.body)
   // // res.json(BOOK);
   // res.redirect('/readall');
@@ -52,32 +53,37 @@ router.post('/create', upload, async function (req, res, next) {
   //   .catch((err) => res.send(err));
   try {
     // res.json({ body: req.body, file: req.file });
+    upload(req, res, async function (error) {
+      if (error) {
+        res.send(error);
+        return;
+      } const newbook = new Books({ 
+        ...req.body, 
+        image: req.file.filename 
+      });
+      await newbook.save();
+      res.redirect("/readall");
+    });
+  } catch (error) {
+    res.send(error);
+  }
+});
 
-    const newbook = new Books({ ...req.body, image: req.file.filename });
-    await newbook.save();
+router.get("/delete/:id", async function (req, res, next) {
+  // BOOK.splice(req.params.index, 1);
+  // res.redirect('/readall');
+  try {
+    const book = await Books.findByIdAndDelete(req.params.id);
+
+    fs.unlinkSync(path.join(__dirname, "..", "public", "images", book.image));
+
     res.redirect("/readall");
   } catch (error) {
     res.send(error);
   }
 });
 
-router.get('/delete/:id', async function (req, res, next) {
-  // BOOK.splice(req.params.index, 1);
-  // res.redirect('/readall');
-  try {
-    const book = await Books.findByIdAndDelete(req.params.id);
-
-    fs.unlinkSync(
-      path.join(__dirname, "..", "public", "images", book.image)
-    );
-
-    res.redirect('/readall');
-  } catch (error) {
-    res.send(error);
-  }
-});
-
-router.get('/update/:id', async function (req, res, next) {
+router.get("/update/:id", async function (req, res, next) {
   // const index = req.params.index;
   // const book = BOOK[index];
   // res.render('update', {
@@ -86,14 +92,14 @@ router.get('/update/:id', async function (req, res, next) {
   // });
   try {
     const book = await Books.findById(req.params.id);
-    res.render('update', { book });
+    res.render("update", { book });
   } catch (error) {
     res.send(error);
   }
 });
 
 //update book form submissionn
-router.post('/update/:id', upload, async function (req, res, next) {
+router.post("/update/:id", upload, async function (req, res, next) {
   // const i = req.params.index;
   // BOOK[i] = req.body;
   // res.redirect('/readall');
@@ -106,14 +112,13 @@ router.post('/update/:id', upload, async function (req, res, next) {
       );
     }
     await Books.findByIdAndUpdate(req.params.id, updateddata);
-    res.redirect('/readall');
-
+    res.redirect("/readall");
   } catch (error) {
     res.send(error);
   }
 });
 
-router.get('/about', function (req, res, next) {
-  res.render('about');
+router.get("/about", function (req, res, next) {
+  res.render("about");
 });
 module.exports = router;

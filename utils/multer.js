@@ -11,7 +11,19 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
 })
+const fileFilter = (req, file, cb) => {
+    let allowedfiles = /png|jpg|jpeg|svg|webp|gif/;
+    let mimetype = allowedfiles.test(file.mimetype);
+    let extname = allowedfiles.test(
+        path.extname(file.originalname).toLocaleLowerCase()
+    )
+    if (extname && mimetype) {
+        cb(null, true);
+    } else {
+        cb(`Error: only ${allowedfiles} image extensions are allowed`);
+    }
+}
 
-const upload = multer({ storage: storage })
+const upload = multer({ storage, fileFilter });
 
 module.exports = upload;
