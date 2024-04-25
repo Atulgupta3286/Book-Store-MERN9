@@ -57,9 +57,10 @@ router.post("/create", async function (req, res, next) {
       if (error) {
         res.send(error);
         return;
-      } const newbook = new Books({ 
-        ...req.body, 
-        image: req.file.filename 
+      }
+      const newbook = new Books({
+        ...req.body,
+        image: req.file.filename
       });
       await newbook.save();
       res.redirect("/readall");
